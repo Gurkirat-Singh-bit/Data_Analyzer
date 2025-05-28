@@ -1,1 +1,277 @@
-/* Basic styling */
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    max-width: 600px;
+    width: 90%;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Header styles */
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+/* Upload section */
+.upload-section {
+    margin-bottom: 2rem;
+}
+
+.file-input-wrapper {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-label {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #ecf0f1;
+    border: 2px dashed #bdc3c7;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 400;
+    color: #2c3e50;
+    min-width: 200px;
+}
+
+.file-label:hover {
+    background-color: #d5dbdb;
+    border-color: #95a5a6;
+    transform: translateY(-2px);
+}
+
+.file-icon {
+    margin-right: 8px;
+    font-size: 1.2rem;
+}
+
+.file-name {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+.file-name.selected {
+    color: #27ae60;
+    font-style: normal;
+    font-weight: 500;
+}
+
+/* Upload button */
+.upload-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.upload-btn:hover:not(:disabled) {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+}
+
+.upload-btn:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.upload-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+/* Status message */
+.status-message {
+    margin: 1rem 0;
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-weight: 500;
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.status-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    display: block;
+}
+
+.status-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    display: block;
+}
+
+.status-message.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+    display: block;
+}
+
+/* Output section */
+.output-section {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    min-height: 100px;
+}
+
+.output-section:empty .plotly-container:empty::before {
+    content: "Data analysis results and interactive graphs will appear here";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-style: italic;
+    min-height: 100px;
+}
+
+.plotly-container {
+    margin-bottom: 1rem;
+    background: white;
+    border-radius: 6px;
+    padding: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: none; /* Hidden by default */
+}
+
+.plotly-container.active {
+    display: block;
+}
+
+.file-info-container {
+    background: white;
+    border-radius: 6px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: none; /* Hidden by default */
+}
+
+.file-info-container.active {
+    display: block;
+}
+
+.file-info h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 0.5rem;
+}
+
+.file-info p {
+    margin: 0.5rem 0;
+    color: #555;
+}
+
+/* Plotly chart specific styles */
+.plotly-chart {
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+/* Custom scrollbar for output section */
+.output-section {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.output-section::-webkit-scrollbar {
+    width: 8px;
+}
+
+.output-section::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.output-section::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.output-section::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+    .container {
+        width: 95%;
+        padding: 1.5rem;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .file-label {
+        min-width: 150px;
+        padding: 10px 20px;
+    }
+    
+    .upload-btn {
+        padding: 10px 24px;
+        min-width: 100px;
+    }
+}

@@ -1,1 +1,5 @@
 # Python dependencies
+
+flask
+pandas
+plotly
