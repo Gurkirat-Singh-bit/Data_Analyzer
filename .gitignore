@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+
+# Virtual Environment
+venv/
+ENV/
+.env
+.venv
+env.bak/
+venv.bak/
+
+# Flask / FastAPI
+instance/
+.webassets-cache
+.coverage
+htmlcov/
+
+# Data files
+*.csv
+*.xls
+*.xlsx
+*.db
+*.sqlite3
+*.sqlite
+
+# Uploaded files (you may want to track this folder but not its contents)
+/backend/uploads/*
+!/backend/uploads/.gitkeep
+
+# Generated content
+/static/*
+!/static/.gitkeep
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Node modules (in case you add any JavaScript packages)
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
