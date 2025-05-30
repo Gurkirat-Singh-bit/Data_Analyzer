@@ -12,7 +12,7 @@
 
 **A modern, powerful data analysis tool that transforms your raw data into actionable insights**
 
-[🚀 Live Demo](#) • [📖 Documentation](#documentation) • [🐛 Report Bug](https://github.com/Gurkirat-Singh-bit/Data_Analyzer/issues) • [✨ Request Feature](https://github.com/Gurkirat-Singh-bit/Data_Analyzer/issues)
+
 
 </div>
 
@@ -32,21 +32,6 @@
 | 🎨 **Modern UI/UX** | Clean, responsive design with drag-and-drop file upload |
 | ⚡ **Real-time Processing** | Fast data processing with progress indicators |
 | 🔧 **Robust Error Handling** | Smart fallback mechanisms and user-friendly error messages |
-
-</div>
-
-## 🖥️ Screenshots
-
-<div align="center">
-
-### Upload Interface
-![Upload Interface](https://via.placeholder.com/800x400/667eea/ffffff?text=Upload+Interface)
-
-### Analysis Results
-![Analysis Results](https://via.placeholder.com/800x400/764ba2/ffffff?text=Analysis+Results)
-
-### Interactive Charts
-![Interactive Charts](https://via.placeholder.com/800x400/667eea/ffffff?text=Interactive+Charts)
 
 </div>
 
