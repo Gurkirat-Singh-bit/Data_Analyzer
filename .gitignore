@@ -47,9 +47,7 @@ htmlcov/
 /backend/uploads/*
 !/backend/uploads/.gitkeep
 
-# Generated content
-/static/*
-!/static/.gitkeep
+
 
 # IDE specific files
 .idea/

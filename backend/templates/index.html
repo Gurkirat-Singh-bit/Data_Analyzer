@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Analyzer - Upload</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <div class="header-content">
+                <h1><i class="fas fa-chart-bar"></i> Data Analyzer</h1>
+                <p class="subtitle">Upload your CSV, JSON, or Excel files for comprehensive analysis</p>
+            </div>
+        </header>
+        
+        <main class="main-content">
+            <div class="upload-card">
+                <div class="upload-zone" id="uploadZone">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Drag & Drop your file here</h3>
+                    <p>or click to browse files</p>
+                    <input type="file" id="fileInput" class="file-input" accept=".csv,.json,.xlsx,.xls">
+                    <div class="supported-formats">
+                        <span class="format-tag">CSV</span>
+                        <span class="format-tag">JSON</span>
+                        <span class="format-tag">Excel</span>
+                    </div>
+                </div>
+                
+                <div id="fileDetails" class="file-details hidden">
+                    <div class="file-info-card">
+                        <div class="file-icon-large">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="file-metadata">
+                            <h4 id="fileName" class="file-name"></h4>
+                            <div class="file-stats">
+                                <span class="file-stat">
+                                    <i class="fas fa-weight-hanging"></i>
+                                    <span id="fileSize"></span>
+                                </span>
+                                <span class="file-stat">
+                                    <i class="fas fa-tag"></i>
+                                    <span id="fileType"></span>
+                                </span>
+                                <span class="file-stat">
+                                    <i class="fas fa-calendar"></i>
+                                    <span id="uploadTime"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <button id="removeFile" class="remove-file-btn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <button id="analyzeBtn" class="analyze-btn">
+                        <i class="fas fa-chart-line"></i>
+                        Analyze Data
+                    </button>
+                </div>
+                
+                <div id="uploadProgress" class="upload-progress hidden">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p class="progress-text" id="progressText">Uploading...</p>
+                </div>
+                
+                <div id="statusMessage" class="status-message"></div>
+            </div>
+            
+            <div class="features-section">
+                <h3>What you'll get:</h3>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Statistical Analysis</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-search"></i>
+                        <span>Data Quality Insights</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-download"></i>
+                        <span>PDF Report Export</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Interactive Visualizations</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer with action buttons and credits -->
+        <footer class="main-footer">
+            <!-- Action buttons -->
+            <div class="footer-actions">
+                <a href="https://github.com/Gurkirat-Singh-bit/Data_Analyzer" target="_blank" class="footer-btn btn-github">
+                    <i class="fab fa-github"></i> GitHub Repo
+                </a>
+                <a href="https://gurkirat-singh-bit.github.io/Portfolio/" target="_blank" class="footer-btn btn-portfolio">
+                    <i class="fas fa-user"></i> Portfolio
+                </a>
+            </div>
+            
+            <p class="credits">
+                Made with <i class="fas fa-heart" style="color: #e74c3c;"></i> by 
+                <a href="https://gurkirat-singh-bit.github.io/Portfolio/" target="_blank">Gurkirat Singh</a> 
+                and <a href="https://github.com/features/copilot" target="_blank">GitHub Copilot</a>
+            </p>
+        </footer>
+    </div>
+    
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

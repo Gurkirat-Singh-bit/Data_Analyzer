@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results - {{ filename }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/results.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body data-analysis='{{ analysis|tojson|safe }}'>
+    <div class="container">
+        <header class="results-header">
+            <div class="header-top">
+                <h1><i class="fas fa-chart-line"></i> Analysis Results</h1>
+                <div class="header-actions">
+                    <a href="/" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Upload
+                    </a>
+                    <button id="downloadPdfBtn" class="btn btn-primary">
+                        <i class="fas fa-file-pdf"></i> Download PDF
+                    </button>
+                    <a href="/download-report/{{ filename }}" class="btn btn-accent">
+                        <i class="fas fa-download"></i> Download Report
+                    </a>
+                </div>
+            </div>
+            <div class="file-info">
+                <i class="fas fa-file"></i>
+                <span class="filename">{{ filename }}</span>
+                <span class="timestamp">Analyzed on {{ analysis.analysis_timestamp[:19] if analysis.analysis_timestamp else 'N/A' }}</span>
+            </div>
+        </header>
+
+        <main class="results-main" id="reportContent">
+            <!-- Overview Section -->
+            <section class="overview-section">
+                <h2><i class="fas fa-chart-bar"></i> Dataset Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-table"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ analysis.shape[0] if analysis.shape else 0 }}</h3>
+                            <p>Rows</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-columns"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ analysis.shape[1] if analysis.shape else 0 }}</h3>
+                            <p>Columns</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ analysis.numeric_columns|length if analysis.numeric_columns else 0 }}</h3>
+                            <p>Numeric Columns</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ analysis.total_missing if analysis.total_missing else 0 }}</h3>
+                            <p>Missing Values</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ "%.1f"|format(analysis.data_quality.completeness) if analysis.data_quality else 0 }}%</h3>
+                            <p>Data Quality</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Column Information Section -->
+            <section class="columns-section">
+                <h2><i class="fas fa-list"></i> Column Information</h2>
+                <div class="columns-grid">
+                    {% if analysis.columns %}
+                        {% for column in analysis.columns %}
+                        <div class="column-card">
+                            <div class="column-header">
+                                <h4>{{ column }}</h4>
+                                <span class="column-type">{{ analysis.dtypes[column] if analysis.dtypes else 'Unknown' }}</span>
+                            </div>
+                            <div class="column-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">Missing:</span>
+                                    <span class="stat-value">{{ analysis.missing_values[column] if analysis.missing_values else 0 }}</span>
+                                </div>
+                                {% if analysis.basic_stats and column in analysis.basic_stats %}
+                                <div class="stat-item">
+                                    <span class="stat-label">Unique:</span>
+                                    <span class="stat-value">{{ analysis.basic_stats[column].count if analysis.basic_stats[column].count else 'N/A' }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No column information available.</p>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- Statistical Summary Section -->
+            {% if analysis.basic_stats %}
+            <section class="stats-section">
+                <h2><i class="fas fa-chart-area"></i> Statistical Summary</h2>
+                <div class="stats-container">
+                    {% for column, stats in analysis.basic_stats.items() %}
+                    <div class="stats-card">
+                        <h4>{{ column }}</h4>
+                        <div class="stats-list">
+                            {% for stat_name, stat_value in stats.items() %}
+                            <div class="stat-row">
+                                <span class="stat-name">{{ stat_name.title() }}:</span>
+                                <span class="stat-val">
+                                    {% if stat_value is number %}
+                                        {{ "%.4f"|format(stat_value) }}
+                                    {% else %}
+                                        {{ stat_value }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- Categorical Statistics Section -->
+            {% if analysis.categorical_stats %}
+            <section class="categorical-stats-section">
+                <h2><i class="fas fa-tags"></i> Categorical Data Summary</h2>
+                <div class="categorical-container">
+                    {% for column, stats in analysis.categorical_stats.items() %}
+                    <div class="categorical-card">
+                        <h4>{{ column }}</h4>
+                        <div class="categorical-stats">
+                            <div class="stat-row">
+                                <span class="stat-name">Unique Values:</span>
+                                <span class="stat-val">{{ stats.unique_count }}</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-name">Most Frequent:</span>
+                                <span class="stat-val">{{ stats.most_frequent }}</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-name">Frequency:</span>
+                                <span class="stat-val">{{ stats.frequency }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- Data Quality Insights Section -->
+            {% if analysis.insights %}
+            <section class="insights-section">
+                <h2><i class="fas fa-lightbulb"></i> Data Quality Insights</h2>
+                <div class="insights-container">
+                    {% if analysis.insights.data_quality %}
+                    <div class="insight-card">
+                        <h4><i class="fas fa-search"></i> Quality Assessment</h4>
+                        <ul class="insight-list">
+                            {% for insight in analysis.insights.data_quality %}
+                            <li>{{ insight }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    
+                    {% if analysis.insights.patterns %}
+                    <div class="insight-card">
+                        <h4><i class="fas fa-pattern"></i> Data Patterns</h4>
+                        <ul class="insight-list">
+                            {% for pattern in analysis.insights.patterns %}
+                            <li>{{ pattern }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    
+                    {% if analysis.insights.recommendations %}
+                    <div class="insight-card">
+                        <h4><i class="fas fa-recommendations"></i> Recommendations</h4>
+                        <ul class="insight-list">
+                            {% for rec in analysis.insights.recommendations %}
+                            <li>{{ rec }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- Visualizations Section -->
+            {% if analysis.visualizations %}
+            <section class="visualizations-section">
+                <h2><i class="fas fa-chart-pie"></i> Data Visualizations</h2>
+                <div class="charts-container">
+                    {% for viz_name, viz_data in analysis.visualizations.items() %}
+                    <div class="chart-card">
+                        <h4>{{ viz_name.replace('_', ' ').title() }}</h4>
+                        <div id="chart-{{ loop.index }}" class="chart-container"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- Data Preview Section -->
+            {% if analysis.head %}
+            <section class="data-preview-section">
+                <h2><i class="fas fa-eye"></i> Data Preview (First 5 Rows)</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                {% for column in analysis.columns %}
+                                <th>{{ column }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in analysis.head %}
+                            <tr>
+                                {% for column in analysis.columns %}
+                                <td>{{ row[column] if column in row else 'N/A' }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            {% endif %}
+        </main>
+    </div>
+
+    <!-- JavaScript for visualizations and PDF generation -->
+    <script type="text/javascript">
+        // Get analysis data from body data attribute
+        let analysisDataStr = document.body.getAttribute('data-analysis');
+        window.analysisData = {};
+        
+        try {
+            if (analysisDataStr) {
+                window.analysisData = JSON.parse(analysisDataStr);
+            }
+        } catch (e) {
+            console.error('Error parsing analysis data:', e);
+            window.analysisData = {};
+        }
+        
+        // Initialize visualizations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize charts if visualizations exist
+            if (window.analysisData && window.analysisData.visualizations) {
+                const visualizations = window.analysisData.visualizations;
+                
+                // Get all chart containers
+                const chartContainers = document.querySelectorAll('.chart-container');
+                
+                let chartIndex = 0;
+                Object.keys(visualizations).forEach((vizName) => {
+                    if (chartIndex < chartContainers.length && visualizations[vizName]) {
+                        const chartDiv = chartContainers[chartIndex];
+                        
+                        try {
+                            let plotData;
+                            if (typeof visualizations[vizName] === 'string') {
+                                plotData = JSON.parse(visualizations[vizName]);
+                            } else {
+                                plotData = visualizations[vizName];
+                            }
+                            
+                            if (plotData && plotData.data && plotData.layout) {
+                                Plotly.newPlot(chartDiv, plotData.data, plotData.layout, {
+                                    responsive: true,
+                                    displayModeBar: true,
+                                    displaylogo: false
+                                });
+                            } else {
+                                chartDiv.innerHTML = '<div class="chart-error"><i class="fas fa-exclamation-triangle"></i> Chart data not available</div>';
+                            }
+                        } catch (error) {
+                            console.error('Error rendering chart:', error);
+                            chartDiv.innerHTML = '<div class="chart-error"><i class="fas fa-exclamation-triangle"></i> Error loading visualization</div>';
+                        }
+                        
+                        chartIndex++;
+                    }
+                });
+                
+                // Hide charts that don't have data
+                for (let i = chartIndex; i < chartContainers.length; i++) {
+                    chartContainers[i].closest('.chart-card').style.display = 'none';
+                }
+            } else {
+                // Hide all charts if no visualization data
+                document.querySelectorAll('.chart-card').forEach(card => {
+                    card.style.display = 'none';
+                });
+            }
+
+        });
+    </script>
+
+    <script src="{{ url_for('static', filename='js/results.js') }}"></script>
+</body>
+</html>
