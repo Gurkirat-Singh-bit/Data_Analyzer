@@ -2,15 +2,18 @@
 
 from flask import Flask, request, jsonify , render_template , url_for, send_file, make_response
 import os 
-from analysis import load_data, analyze_data
+from backend.analysis import load_data, analyze_data
 from werkzeug.exceptions import RequestEntityTooLarge
 import json
 from datetime import datetime
 import io
 
-UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')  
+UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'backend', 'uploads')  
 
-app = Flask(__name__,static_folder='../static', static_url_path='/static') 
+app = Flask(__name__,
+           static_folder='static', 
+           static_url_path='/static',
+           template_folder='backend/templates') 
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Set maximum file size to 50MB
@@ -57,7 +60,7 @@ def upload_file():
             
             # Validate that the file can be loaded (basic validation)
             try:
-                from analysis import load_data
+                from backend.analysis import load_data
                 print(f"Validating file: {filename} (extension: {file_extension})")
                 test_df = load_data(filepath)
                 print(f"File validation successful: {test_df.shape[0]} rows, {test_df.shape[1]} columns")
